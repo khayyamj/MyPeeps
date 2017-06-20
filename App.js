@@ -3,8 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import firebase from 'firebase';
 const config = require('./config');
 import Login from './src/Login';
+import Loader from './src/Loader';
+import PeopleList from './src/PeopleList';
 
 export default class App extends React.Component {
+  state = {
+    loggedIn: null
+  }
   componentWillMount () {
     const { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId } = config;
       firebase.initializeApp({
@@ -15,12 +20,30 @@ export default class App extends React.Component {
         storageBucket: storageBucket,
         messagingSenderId: messagingSenderId
       })
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.setState({ loggedIn: true })
+        } else {
+          this.setState({ loggedIn: false })
+        }
+      })
+  }
+
+  renderInitialView() {
+    switch (this.state.loggedIn) {
+      case true:
+        return <PeopleList />
+      case false:
+        return <Login />
+      default:
+        return <Loader size='large' />
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Login />
+        {this.renderInitialView()}
       </View>
     );
   }
@@ -32,15 +55,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });

@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 const Loader = ({ size }) => {
   return (
     <View style={styles.loader}>
-      <Activity size={size || 'small'} />
+      <ActivityIndicator size={size || 'small'} />
     </View>
   );
 }
