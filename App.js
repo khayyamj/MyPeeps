@@ -1,10 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import firebase from 'firebase';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+import Login from './src/components/Login';
+import Loader from './src/components/Loader';
+import PeopleList from './src/components/PeopleList';
+import reducers from './src/reducers/PeopleReducer';
+
 const config = require('./config');
-import Login from './src/Login';
-import Loader from './src/Loader';
-import PeopleList from './src/PeopleList';
+const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 export default class App extends React.Component {
   state = {
@@ -42,9 +48,11 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {this.renderInitialView()}
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          {this.renderInitialView()}
+        </View>
+      </Provider>
     );
   }
 }
